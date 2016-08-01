@@ -1,32 +1,31 @@
-#Conclusions
+# Conclusions
 
-很快的就講到尾聲(其實我寫了好幾個晚上 XD)，讓我們來回顧一下講了什麼
+很快的就讲到尾声(其实我写了好几个晚上 XD)，让我们来回顾一下讲了什么
 
-在Java Thread章節中，我們講了thread最基本的概念，並且知道怎麼開thread，怎麼定義thread要做的事情。
+在Java Thread章节中，我们讲了thread最基本的概念，并且知道怎么创建thread，怎么定义thread要做的事情。
 
-有了thread之後，那開始要解決synchronization的問題。其實這個章節講的是java最底層的同步機制，說真的除了`synchronized` keyword，大部分幾乎不會直接用到。但是透過resource sharing, flow control, message passing三種概念，來幫助勾勒出同步最常見的幾種情境。
+有了thread之后，那开始要解决synchronization的问题。其实这个章节讲的是Java最底层的同步机制，说真的除了`synchronized` keyword，大部分几乎不会直接用到。但是通过resource sharing, flow control, message passing三种概念，来帮助勾勒出同步最常见的几种场景。
 
-接下來講到thread pool，我們在thread pool中提到了single queue/multi consumer這種傳統的thread pool，我把它類比成**取票機**。接下來還介紹了queue-per-thread並且透過work stealing方式的`ForkJoinPool`，這種pool對於divide and conquer分而治之的方式特別適合，我把它類比成**團隊做大專案**的概念。
+接下來讲到thread pool，我们在thread pool中提到了single queue/multi consumer这种传统的thread pool，我把它类比成**取票机**。接下来还介绍了queue-per-thread并且通过work stealing方式的`ForkJoinPool`，这种pool对於divide and conquer分而治之的方式特別适合，我把它类比成**团队总大任务**的概念。
 
-最後講到`Future`跟`CompletableFuture`。Future是async invocation中caller看到對未來回傳值的一個容器，而CompleableFuture是Future的實作，但也扮演了Promise的角色，他代表的是Async invocation的callee在做完時**承諾**要把結果放進去。
+最后讲到`Future`跟`CompletableFuture`。Future是async invocation中caller看到对未來返回值的一个容器，而CompleableFuture是Future的实现，但也扮演了Promise的角色，他代表的是Async invocation的callee在做完时**承诺**要把结果放进去。
 
-而CompletableFuture除了Completable的特性外，其實還有Listenable, Composable, Combinable的特性。並且用monad的map/flatmap來transform這些sync methods變成async methods。
+而CompletableFuture除了Completable的特性外，其实还有Listenable, Composable, Combinable的特性。并且用monad的map/flatmap来transform这些sync methods变成async methods。
 
-不知道您有沒有發現，每一章節都把前一章節的概念延伸。
+不知道您有沒有发现，每一章节都把前一章节的概念延伸。
 
 1. `synchorinzed` keyword
-2. `wait()`/`notify()`包在synchronized中，並且實作producer/consumer
-3. 用blockqueue來做producer/consumer
-4. 用producer/consumer的概念來做thread pool
-5. 透過thread pool的submit來回傳非同步的結果，也就是Future
-6. CompletableFuture可以在thread pool中執行
+2. `wait()`/`notify()`包在synchronized中，并且实现producer/consumer
+3. 用blockqueue；来做producer/consumer
+4. 用producer/consumer的概念来做thread pool
+5. 通过thread pool的submit来返回非同步的结果，也就是Future
+6. CompletableFuture可以在thread pool中执行
 
-基本上這份文件應該已經涵蓋了所有在java中你所需要的基本multithread知識。而且也看到了整個jdk有關concurrency的演進
+基本上这份文件应该已经涵盖了所有在Java中你所需要的基本multithread知识。而且也看到了整個JDK有关concurrency的演进
 
 - JDK最初版的thread
 - JDK1.5的`java.util.concurrent`
 - JDK1.7的`ForkJoinPool`
 - JDK1.8的`CompletableFuture`
 
-希望這個教學各位會滿意。有任何疑問歡迎留言討論。至於這份文件嚴禁商業用途，而且不允予許轉載。如覺得這份文件很值得分享，歡迎分享[Java多執行緒的基本常識](https://www.gitbook.com/book/popcornylu/java_multithread/details)。
-
+希望这个教学各位会满意。有任何疑问欢迎留言讨论。至于这份文件严禁商业用途，而且不允予许转载。如觉得这份文件很值得分享，欢迎分享原文[Java多线程的基本常识](https://www.gitbook.com/book/popcornylu/java_multithread/details)。

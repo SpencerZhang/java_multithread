@@ -1,6 +1,6 @@
 # How to use
 
-廢話不多說，直接來看java thread怎麼使用
+废话不多说，直接來看Java thread怎么使用：
 
 ```java
 new Thread(() -> {
@@ -8,17 +8,16 @@ new Thread(() -> {
 }).start();
 ```
 
-都已經java8的時代了，我直接用java8的語法來介紹java thread。在上面的程式中產生了一個新的thread，thread的constructor是一個實作`java.lang.Runnable`的物件。當呼叫`start()`此method時，則會啟動這個thread，並且執行`Runnable#run()`。在java8中有好用的lambda，我們直接用lambda來實作那個runnalbe。當然你也可以用傳統的產生一個新的class來實作`Runnable`。因為這個文件不是要教你怎麼寫java，我就先假設你已經了解寫java的基本常識，如果你到這邊還不懂我在寫什麼，那建議可以先拿一本java入門書來了解java最基本的編程知識。
+都已经Java8的时代了，我直接用Java8的语法来介绍Java thread。在上面的程序中创建了一個新的thread，thread的constructor是一个实现java.lang.Runnable`的组件。当呼叫`start()`此method时，则会启动这个thread，并且执行`Runnable#run()`。在Java8中有好用的lambda，我们直接用lambda来实现那个runnable。当然你也可以用传统的方式新建一个新的Class來實作`Runnable`。因为这个文件不是要教你怎么写Java，我就先假设你已经了解并使用过Java，熟悉Java基本常识，如果你到这里还不懂我在写什么，那建议可以先拿一本Java入门书来了解Java最基本的编程知识。
 
-# 使用時機
+# 使用场景
 
-通常有以下幾種情況會用thread
+通常有以下几种情況会用thread
 
-1. IO相關的task，或稱IO bound task。如果同時需要讀很多個檔案，或是同時要處理很多的sokcet connection，用thread的方法去做blocking read/write可以讓程式不會因為等待IO而導致什麼事情都不能做。
-2. 執行很耗運算的task，或稱CPU bound task。當這種task多，我們會想要使用多個CPU cores的能力。單執行緒的程式只能用到single core的好處，也就是程式再怎麼耗CPU，最多就用到一個CPU。當使用multi-thraed的時候，就可以把CPU吃飽吃滿不浪費。
-3. 非同步執行。其實不管是IO-bound task或是CPU-bound task，我們應該都還是要跟主程式做溝通，所以通常的概念都是開一個thread去做IO bound或是CPU bound task，等到他們做完了，我再把結果拿到我的主程式做後續的處理。當然新開thread不是唯一的方法，我們稍後的章節會陸續提到很多非同步執行的策略跟方法。
-4. 排程。常見的排程方法有三種。第一種是delay，例如一秒鐘後執行一個task。第二種是週期性的，例如每一秒鐘執行一個task。第三種是指定某個時間執行一個task。當然這些應用會包裝在`Timer`或是`ScheduledThreadPoolExecutor`中，但是底層都還是用thread去完成的。
-5. Daemon，或是稱之為service。有些時候我們需要某個thread專門去等某些event發生的時候才會去做對應的事情。例如寫server程式，我們會希望有一個thread專門去聽某個port的連線訊息。如果我們寫一個queue的consumer，我們也會開個thread去聽message收到的event。
+1. IO密集型的task，或称IO bound task。如果同时需要让很多个档案，或是同时要处理很多的sokcet connection，用thread的方法去做blocking read/write可以让程序不會因为IO而导致什么事情都不能做。
+2. 执行很耗运算的task，或称CPU bound task。当这种task多，我们会想要使用多个CPU cores的能力。单线程的程式只能用到single core的好处，也就是程序再怎么CPU，最多就用到一个CPU。当使用multi-thraed的时候，就可以把CPU能力拉满不浪费。
+3. 非同步执行。其实不管是IO-bound task或是CPU-bound task，我们应该都还是要跟主程序做沟通，所以通常的概念都是开一个thread去做IO bound或是CPU bound task，等到他们执行完，我再把结果拿到我们主程序做后续的处理。当然新开thread不是唯一的方法，我們稍后的章节会陆续提到很多非同步执行的策略跟方法。
+4. 排程(定时任务)。常见的排程方法有三种。第一种是delay，例如一秒后执行一个task。第二种是周期性的，例如每一秒钟执行一个task。第三种是指定某个时间执行一个task。当然这些应用会包装在`Timer`或是`ScheduledThreadPoolExecutor`中，但是底层都还是用thread去完成的。
+5. Daemon(守护进程)，或是称之为service。有些时候我们需要某个thread专门去等某些event发生的时候才会去做对应的事情。例如写server程序，我们会希望有一个thread专门去听某个port的连接信息。如果我们写一个queue的consumer，我们也会开个thread去监听message收到的event。
 
-我們在寫java程式中，其實我們每天都在跟thread共舞，即便我們沒有直接產生這些thread，但是我們所用的framework可能都已經建構在multi-thread的環境之上，因此我們更需要瞭解multi-thread的課題。下個章節我們來討論thread之間的synchronization的問題。
-
+我们在写Java程序中，其实我们每天都在跟thread共舞，即便我们沒有直接创建这些thread，但是我们所用的framework可能都已经构建在multi-thread的环境之上，因此我们更需要了解multi-thread的课题。下个章节我们来讨论thread之间的synchronization的问题。
