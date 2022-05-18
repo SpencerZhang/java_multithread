@@ -17,7 +17,7 @@ Clothes clothes = future.get();
 
 因为是异步，所以我们可以一次执行很多个异步的task，让他们可以并行的去处理，最后再一次等所有的异步结果。这在生活中也经常发生，例如我去夜市买鸡排豆花跟珍奶，我也不会呆呆的在每一个摊位前面等他一个一个做好，我可能会跟老板说等等过来拿，让这几个摊位可以**并行**的处理我的tasks。
 
-Future是一个interface，所以需要具体的实现。但通常不需要自己实现，还记得前面[ThreadPool](async/basicpool.md)的章节就有提到`Future`了吗? 事实上[ExecutorService#submit](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ExecutorService.html#submit-java.util.concurrent.Callable-)就提供了一个异步执行的实现，并且返回一个`Future`，一般来讲我们只要使用这个method来实现我们的非同步执行就可以了。
+Future是一个interface，所以需要具体的实现。但通常不需要自己实现，还记得前面[ThreadPool](../async/basicpool.md)的章节就有提到`Future`了吗? 事实上[ExecutorService#submit](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ExecutorService.html#submit-java.util.concurrent.Callable-)就提供了一个异步执行的实现，并且返回一个`Future`，一般来讲我们只要使用这个method来实现我们的非同步执行就可以了。
 
 所以上面的代码的具体实现可能长这样：
 
