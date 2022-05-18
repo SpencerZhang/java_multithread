@@ -1,4 +1,4 @@
-# Synchronization
+# Synchronization(同步)
 
 在执行了thread之后，下个要问的问题就是要怎么在thread之间去做synchronization(同步)。我们分以下几个问题来讨论:
 

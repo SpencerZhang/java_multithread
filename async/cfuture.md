@@ -31,10 +31,10 @@ world
 
 | Method                                                       | Description                                                  |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| [runAsync(Runnable runnable)](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html#runAsync-java.lang.Runnable-) | 非同步的执行一个沒有返回值的task，并且在缺省的thread pool中执行。缺省为： [ForkJoinPool.commonPool()](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ForkJoinPool.html#commonPool--) |
-| [runAsync(Runnable runnable, Executor executor)](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html#runAsync-java.lang.Runnable-java.util.concurrent.Executor-) | 非同步的执行一個沒有返回值的task，并且在指定的thread pool之中执行。 |
-| [supplyAsync(Suppliersupplier)](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html#supplyAsync-java.util.function.Supplier-) | 非同步的执行一個有返回值的task，并且在缺省的thread pool之中执行。 |
-| [supplyAsync(Suppliersupplier, Executor executor)](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html#supplyAsync-java.util.function.Supplier-java.util.concurrent.Executor-) | 非同步的执行一個有返回值的task，并且在指定的thread pool之中执行。 |
+| [runAsync(Runnable runnable)](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html#runAsync-java.lang.Runnable-) | 异步的执行一个沒有返回值的task，并且在缺省的thread pool中执行。缺省为： [ForkJoinPool.commonPool()](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ForkJoinPool.html#commonPool--) |
+| [runAsync(Runnable runnable, Executor executor)](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html#runAsync-java.lang.Runnable-java.util.concurrent.Executor-) | 异步的执行一个沒有返回值的task，并且在指定的thread pool之中执行。 |
+| [supplyAsync(Suppliersupplier)](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html#supplyAsync-java.util.function.Supplier-) | 异步的执行一个有返回值的task，并且在缺省的thread pool之中执行。 |
+| [supplyAsync(Suppliersupplier, Executor executor)](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html#supplyAsync-java.util.function.Supplier-java.util.concurrent.Executor-) | 异步的执行一个有返回值的task，并且在指定的thread pool之中执行。 |
 
 
 
@@ -45,32 +45,32 @@ Completable是什么意思? 事实上CompletableFuture是一个Future的实现�
 3. Composible
 4. Combinable
 
-## Completable
+## Completable(可完成)
 
 所谓的Completable就是这个future可以被complete。其实这要先讨论Future跟Promise这两个概念。
 
-1. Future: 是一个未来会完成的一个结果，算是这个结果的容器。Caller(调用方)通过Future来等非同步执行的结果。
-2. Promise: 是可以被改变可以被完成的值，通常是非同步执行的结果。Callee(被调用方)通过Promise来告知非同步完成的结果。
+1. Future: 是一个未来会完成的一个结果，算是这个结果的容器。Caller(调用方)通过Future来等异步执行的结果。
+2. Promise: 是可以被改变可以被完成的值，通常是异步执行的结果。Callee(被调用方)通过Promise来告知异步完成的结果。
 
 基本上就是一体两面。对于asynchronous invocation(异步调用)，对于caller看到就是future，对于callee就是看到promise。而CompletableFuture就同时扮演了Future跟Promise两种角色。
 
 所以CompletableFuture会被下面这样使用：
 
 1. 在非同步调用时，会先创建一个CompletableFuture，并且返回给Caller(调用方)
-2. 这个CompletableFuture会连童async task一起传到worker thread中。
+2. 这个CompletableFuture会连同async task一起传到worker thread中。
 3. 当执行完这个async task，Callee(被调用方)会呼叫CompletableFuture的`complete()`
-4. 此时Caller(调用方)可以通过CompletableFuture的`get()`获取結果的值。
+4. 此时Caller(调用方)可以通过CompletableFuture的`get()`获取结果的值。
 
 其实这个跟Thread的`wait()`/`notify()`相似，不一样的就是这不只是流程同步，还带有返回值。除了complete以外，当执行错误的时候，也可以调用`completeExceptionally()`。
 
 在completable这个特性里，我们把关于caller/consumer用的Future介面，以及callee/provider用的Completable放在一起，我們来看看一下有哪些跟Completable相关：
 
-| Method                                                       | Description                         |
-| ------------------------------------------------------------ | ----------------------------------- |
-| [complete(T t)](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html#complete-T-) | 完成非同步执行，并且返回结果        |
-| [completeExceptionally(Throwable ex)](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html#completeExceptionally-java.lang.Throwable-) | 非同步执行不正常的結束，抛throwable |
+| Method                                                       | Description                       |
+| ------------------------------------------------------------ | --------------------------------- |
+| [complete(T t)](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html#complete-T-) | 完成异步执行，并且返回结果        |
+| [completeExceptionally(Throwable ex)](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html#completeExceptionally-java.lang.Throwable-) | 异步执行不正常的結束，抛throwable |
 
-有了以上的概念，我们很快的可以很快地写出`CompletableFuture.runAsync()`可能的逻辑
+有了以上的概念，我们很快的可以很快地写出`CompletableFuture.runAsync()`可能的逻辑：
 
 ```java
 public static CompletableFuture<Void> runAsync(Runnable runnable) {
@@ -91,16 +91,16 @@ public static CompletableFuture<Void> runAsync(Runnable runnable) {
 
 ## Listenable
 
-对于asynchronous invocation(异步调用)的caller來讲，`Future`只提供了一个pulling result的方法，更多时候我们想要的是**好了叫我**这种语义。因此*Listenable*的特性，就是我们可以注册一個callback，让我可以listen执行完成的event。
+对于asynchronous invocation(异步调用)的caller来讲，`Future`只提供了一个pulling result的方法，更多时候我们想要的是**好了叫我**这种语义。因此*Listenable*的特性，就是我们可以注册一个callback，让我可以listen执行完成的event。
 
-在CompletableFuture主要是通过[whenComplete()](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html#whenComplete-java.util.function.BiConsumer-)跟[handle()](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html#handle-java.util.function.BiFunction-)這兩個method。
+在CompletableFuture主要是通过[whenComplete()](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html#whenComplete-java.util.function.BiConsumer-)跟[handle()](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html#handle-java.util.function.BiFunction-)这两个method。
 
 | Method                                                       | Description                                                  |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | [whenComplete()](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html#whenComplete-java.util.function.BiConsumer-) | 当完成时，把result或exception带到callback function中。       |
 | [handle()](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html#handle-java.util.function.BiFunction-) | 当完成时，把result或exception带到callback function中，并且返回最后的结果。 |
 
-我再把最上面的例子改写成用listener的方式
+我再把最上面的例子改写成用listener的方式：
 
 ```java
 CompletableFuture.runAsync(() -> {
@@ -115,19 +115,19 @@ CompletableFuture.runAsync(() -> {
 });
 ```
 
-这两個method以及包含后面会提到的method都有三种变形，分別是：
+这两个method以及包含后面会提到的method都有三种变形，分別是：
 
 - xxxx(function): function会用前个执行的thread去调用。
-- xxxxAsync(function): function会用非同步的方式调用，使用缺省的thread pool。
-- xxxxAsync(function, executor): function会用非同步的方式调用，使用指定的thread pool。
+- xxxxAsync(function): function会用异步的方式调用，使用缺省的thread pool。
+- xxxxAsync(function, executor): function会用异步的方式调用，使用指定的thread pool。
 
 由于基本逻辑相似，之后就不再赘述。
 
 同样在Guava library中也可以看到listenable的踪影，那就是[ListenableFuture](http://google.github.io/guava/releases/snapshot/api/docs/com/google/common/util/concurrent/ListenableFuture.html)。
 
-## Composible
+## Composible(可组合的)
 
-有了Listenable的特性之后，我们就可以做到当完成时，在做下一件事情。如果接下來又是一个非同步的工作，那就可能会串成非常多层，我们称之为callback hell(回调地狱)。如下例：
+有了Listenable的特性之后，我们就可以做到当完成时，在做下一件事情。如果接下來又是一个异步的工作，那就可能会串成非常多层，我们称之为callback hell(回调地狱)。如下例：
 
 ```java
 public static void sleep(long time) {
@@ -167,7 +167,7 @@ public static void main(String[] args) throws InterruptedException {
     });
 ```
 
-这个程序这样三层可能已经受不了了，如果更多层应该会有恶心到的感觉。这还不打紧，如果再加上异常处理，那可能更是晕头转向。
+这段程序代码这样三层可能已经受不了了，如果更多层应该会有恶心到的感觉。这还不打紧，如果再加上异常处理，那可能更是晕头转向。
 
 对于这种一连串的invocation(调用)，如果可以把这些async function组起來，变成单个的future，可能会舒服许多。先来看最后的结果，我们再来讨论细节。
 
@@ -198,7 +198,7 @@ CompletableFuture
 
 同样在guava library中，我们可以看到composible的踪影，他是放在[Futures](https://google.github.io/guava/releases/19.0/api/docs/com/google/common/util/concurrent/Futures.html)下面的`transformXXX()`相关的methods。
 
-## Combinable
+## Combinable(可组合)
 
 最后，async的流程有些时候不会是单一条路的，有时候更像是[DAG](https://en.wikipedia.org/wiki/Directed_acyclic_graph)(Directed Acyclic Graph)。例如做一个爬虫程序(Crawler)，我们爬一个文章的时候，可能会爬到很多外部链接，这时候就会继续打开更多非同步的task。等到到了某个停止条件，我们就要等所有爬虫的task完成，最终等待执行完这个大的async task。
 
@@ -213,7 +213,7 @@ CompletableFuture
 | [thenAcceptBoth()](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html#thenAcceptBoth-java.util.concurrent.CompletionStage-java.util.function.BiConsumer-) | `CompletableFuture<U>` | `BiConusmer<T,U>`   | `CompletableFuture<Void>` |
 | [acceptEither()](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html#acceptEither-java.util.concurrent.CompletionStage-java.util.function.Consumer-) | `CompletableFuture<T>` | `Conusmer<T>`       | `CompletableFuture<Void>` |
 | [applyToEither()](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html#applyToEither-java.util.concurrent.CompletionStage-java.util.function.Function-) | `CompletableFuture<T>` | `Function<T,U>`     | `CompletableFuture<U>`    |
-| [thenCombine()](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html#thenCombine-java.util.concurrent.CompletionStage-java.util.function.BiFunction-) | `CompletableFuture<U>` | `BiFunction<T,U,V>` | `CompletableFuture<V>`    |
+| [**thenCombine()**](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html#thenCombine-java.util.concurrent.CompletionStage-java.util.function.BiFunction-) | `CompletableFuture<U>` | `BiFunction<T,U,V>` | `CompletableFuture<V>`    |
 
 跟Composible那边的method不一样的是多了一个*with*，代表的是combine的对象。这些method都有可以把两個future **combine**成一个future的特色。而**both**跟**either**，代表的是两个都完成才算完成，还是其中一个完成则算完成。
 
@@ -226,6 +226,6 @@ CompletableFuture
 
 ## 总结
 
-CompletableFuture跟lambda的組合，在Java8中带來了非同步的生力軍。Lambda让之前的annoymous inner class来实现async task会变成简洁非常多，而Completable future又多了composible跟combinable，让复杂的非同步流程变得非常的简洁。
+CompletableFuture跟lambda的组合，在Java8中带來了异步的生力军。Lambda让之前的annoymous inner class来实现async task会变成简洁非常多，而Completable future又多了composible跟combinable，让复杂的非同步流程变得非常的简洁。
 
-再來就如前面讲的，大部分的method都有**async**，以及**async with executor**的版本。所以我们可以很明确指定到底我的task是在哪一个thread pool跑。对于UI程序，常常有一个pattern就是先async到worker thread pool去执行，处理完再到UI thread去update UI并且呈现，这个流程在新的CompletableFuture下变得更为简洁。
+再来就如前面讲的，大部分的method都有**async**，以及**async with executor**的版本。所以我们可以很明确指定到底我的task是在哪一个thread pool跑。对于UI程序，常常有一个pattern就是先async到worker thread pool去执行，处理完再到UI thread去update UI并且呈现，这个流程在新的CompletableFuture下变得更为简洁。

@@ -4,11 +4,11 @@
 
 其实thread pool的概念在我们的生活中处处可见。开thread处理task就很像外包一个工作，可能我们会在网络上找一个人过来帮忙处理，等到事情处理完了合约就结束了。但是当事情多了，那就可能直接雇佣一群人当作员工来处理事情，这群正式员工就是thread pool，在此员工就是thread，而工作就是task。
 
-在银行中也会看到thread pool的例子，办理金融业务的可能会有三四个柜台，而当我们有事情要处理会在取票机中提取一个号码。當職員处理完一个人的业务时，就会叫下一个人来处理。在这里职员就是thread，而我们的号码牌就是一个task，而这個取票机就是queue。
+在银行中也会看到thread pool的例子，办理金融业务的可能会有三四个柜台，而当我们有事情要处理会在取票机中提取一个号码。當職員处理完一个人的业务时，就会叫下一个人来处理。在这里职员就是thread，而我们的号码牌就是一个task，而这个取票机就是queue。
 
 对!我讲到一个重点了，thread pool的三大元素就是thread, task, 跟queue。而其实thread pool就是producer consumer pattern的一种形式。consumer就是一堆threads，当queue中一有工作进来，一个空间的thread就会取出来做处理。
 
-我把前面message passing的程序拿过来改一下，马上就做出一个thread pool：
+我把前面message passing的代码拿过来改一下，马上就做出一个thread pool：
 
 ```java
 public class ThreadPool implements Runnable{
@@ -48,7 +48,6 @@ public class ThreadPool implements Runnable{
 
     public void shutdown() {
         shutdown = true;
-
         threads.forEach((thread) -> {
             thread.interrupt();
         });
@@ -76,11 +75,11 @@ public class ThreadPool implements Runnable{
 }
 ```
 
-这段程序跟producer consumer的code非常的接近，都有一个queue，都有produce跟consume methods。不一样的是queue里面放的是一个Runnable，代表的是一個可以执行的task。
+这段程序跟producer consumer的code非常的接近，都有一个queue，都有produce跟consume methods。不一样的是queue里面放的是一个Runnable，代表的是一个可以执行的task。
 
 另外在constructor中我们有一个参数是`numberOfThreads`，也就是这个thread pool中产生threads的个数，而每个thread的执行內容是一个infinite loop，做的事情就不断的从queue中拿一个task出來，去执行里面的內容。
 
-在main method中创建一个thread pool，里面有五个职员(thread)跟一个取票机(queue)。而我抽了十张号码牌(task)，在当中随机睡了一段时间并且打印信息，最后执行的结果大概会像下面这样：
+在main method中创建一个thread pool，里面有五个职员(thread)跟一个取票机(queue)。而我抽了十张号码牌(task)，在当中随机休眠一段时间并且打印信息，最后执行的结果大概会像下面这样：
 
 ```
 Thread-1: task 1 complete
@@ -100,4 +99,4 @@ Thread-1 shutdown
 Thread-4 shutdown
 ```
 
-其实自己做thread pool就是那么简单，沒有什么高深的学问。当然你不需要自己做thread pool，在Java中已经有很多现有的thread pool可以直接拿来使用，不必自己造轮子。接下來介绍一下有哪些thread pool可以拿來使用。
+其实自己做thread pool就是那么简单，沒有什么高深的学问。当然你不需要自己做thread pool，在Java中已经有很多现有的thread pool可以直接拿来使用，不必自己造轮子。接下來介绍一下有哪些thread pool可以拿来使用。

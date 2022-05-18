@@ -1,8 +1,8 @@
-# Message Passing
+# Message Passing(消息传递)
 
-Message passing简单来讲就是一个thread想把资料丟给另外一個thread去做处理。其实在前面flow control的章节在讲producer/consumer pattern时，其实就已经点出了一个概念。但是可以看得出我们的实现过夜简单，producer跟consumer共用了同一个message变量，当producer/consumer多了，势必会造成前面所说的**race condition**。那有沒有辦法用更high-level的方式来来传递资讯呢?
+Message passing简单来讲就是一个thread想把资料丟给另外一个thread去做处理。其实在前面flow control的章节在讲producer/consumer pattern时，其实就已经点出了一个概念。但是可以看得出我们的实现过简单，producer跟consumer共用了同一个message变量，当producer/consumer多了，势必会造成前面所说的**race condition**。那有沒有办法用更high-level的方式来来传递信息呢?
 
-工厂生产的时候，有一个名词是生产线(pipeline)，每一站都把前一个站的产出变成下一站的來源，而最后一站的产出就是这个工厂的产品。其实这个概念可以想像每一站就是一个thread，而这些站跟站之间的半成品就可以称它为message。而站跟站之间，会通过一个输送带当作管道传递，而这个管道我们称为pipe或是queue。
+工厂生产的时候，有一个名词是生产线(pipeline)，每一站都把前一个站的产出变成下一站的来源，而最后一站的产出就是这个工厂的产品。其实这个概念可以想像每一站就是一个thread，而这些站跟站之间的半成品就可以称它为message。而站跟站之间，会通过一个输送带当作管道传递，而这个管道我们称为pipe或是queue。
 
 ## Blocking Queue
 
@@ -29,6 +29,7 @@ public class ProducerConsumer {
             try {
                 while (true) {
                     producerConsumer.consume();
+                  	// 修改消费者sleep 10000 供过于求，生产者sleep不变
                     Thread.sleep(random.nextInt(1000));
                 }
             } catch (InterruptedException e) {
@@ -43,6 +44,7 @@ public class ProducerConsumer {
                 int counter = 0;
                 while (true) {
                     producerConsumer.produce("message" + counter++);
+                    // 修改生产者sleep 10000 供不应求，消费者sleep不变
                     Thread.sleep(random.nextInt(1000));
                 }
             } catch (InterruptedException e) {
@@ -57,7 +59,7 @@ public class ProducerConsumer {
 
 ## Pipe
 
-有使用Unix/Linux的读者应该很熟悉[pipe](https://en.wikipedia.org/wiki/Pipeline_(software))也就是`|`这個shell operation，这是Unix当初在设计的时候非常重要的[philosophy](https://en.wikipedia.org/wiki/Unix_philosophy):
+有使用Unix/Linux的读者应该很熟悉[pipe](https://en.wikipedia.org/wiki/Pipeline_(software))也就是`|`这个shell operation，这是Unix当初在设计的时候非常重要的[philosophy](https://en.wikipedia.org/wiki/Unix_philosophy):
 
 - Write programs that do one thing and do it well.
 - Write programs to work together.
@@ -120,11 +122,11 @@ public class Pipe {
 }
 ```
 
-## Other Utility
+## Other Utilities(其他工具)
 
 - [Pipe](https://docs.oracle.com/javase/8/docs/api/java/nio/channels/Pipe.html): nio的版本。其实跟`PipedInputStream`跟`PipedOutputStream`类似。
 - [Future](https://docs.oracle.com/javase/8/docs/api/index.html?java/util/concurrent/Future.html) and [CompletableFuture](https://docs.oracle.com/javase/8/docs/api/index.html?java/util/concurrent/CompletableFuture.html): 其实两个都同时扮演了flow control跟message passing。同样是留在后面的章节再做讨论。
 
-## Recap
+## Recap(回顾)
 
 到这里我们讨论了resource sharing, flow control, message passing。这可以说是multi-threading中最重要的三个问题。但是mult-thread程序不好撰写，即使是知道了上面这些问题，还是很容易出错。因此有必要把更high-level，更一般化的问题包裝成更好用的介面。后面章节我们会把thread pool跟asynchronous invokation这两个常用的场景做更进一步介绍。
