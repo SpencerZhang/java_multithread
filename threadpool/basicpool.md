@@ -53,7 +53,7 @@ public interface ExecutorService extends Executor {
 | shutdown shutdownNow | 让整个thread pool的threads都停止，简单讲就是打烊了。         |
 | awaitTermination     | 等待所有shutdown后的task都执行完成。可以说是打烊并且所有善后都处理完了。 |
 
-另外还有一种较特殊的thread pool称为ScheduledExecutorService](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ScheduledExecutorService.html)。他除了可以做原本submit task到thread pool以外，还可以让这个task不会立刻执行。如下:
+另外还有一种较特殊的thread pool称为[ScheduledExecutorService](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ScheduledExecutorService.html)。他除了可以做原本submit task到thread pool以外，还可以让这个task不会立刻执行。如下:
 
 ```java
 public interface ScheduledExecutorService extends ExecutorService {
